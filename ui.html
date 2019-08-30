@@ -1,3 +1,5 @@
+<script src="https://raw.githack.com/SortableJS/Sortable/master/Sortable.js"></script>
+
 <style>
   body{
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -9,12 +11,29 @@
     background-color:#2d2d2d; 
     margin: 4px;
   }
+  .selected {
+    border: solid red 1px !important;
+    z-index: 1 !important;
+  }
 </style>
 
+<div id="list"></div>
 
-<h2>Style Manager</h2>
-<div id="all-styles"></div>
+<script>
+  Sortable.create(list, {
+    group: 'shared',
+    multiDrag: true,
+    selectedClass: "selected",
+    animation: 150,
+    onEnd: function (/**Event*/evt) {
+        //console.log(evt.oldIndex); 
+        //console.log(evt.newIndex);
 
+        parent.postMessage({ pluginMessage: colorArray }, '*')
+    }
+  });
+
+</script>
 <script>
 
 onmessage = (event) => {
@@ -25,40 +44,25 @@ onmessage = (event) => {
   var r;
   var g;
   var b;
-  let colorArray = [];
+  var colorArray = [];
   
   for (let i = 0; i < 3; i++) {
     temp = document.createElement('div');
     temp.className = 'results';
     temp.innerHTML = event.data.pluginMessage[i].id;
-    document.getElementById('all-styles').appendChild(temp);
+    document.getElementById('list').appendChild(temp);
     temp.style.opacity = event.data.pluginMessage[i].opacity;
     
-    r =  (event.data.pluginMessage[i].color.r*255);
-    g =  (event.data.pluginMessage[i].color.g*255);
-    b =  (event.data.pluginMessage[i].color.b*255);
-    colorArray.push('rgb(' + r +', ' + g +', ' + b + ')');
-    //var item = document.querySelector('.results');
-    //temp.style.backgroundColor = colorArray[i];
-    //temp.style.backgroundColor = 'rgb(0,' + ' , 0)';
-    //console.log('rgb(' + r +', ' + g +', ' + b + ')');
-    
+    r =  Math.round((event.data.pluginMessage[i].color.r*255));
+    g =  Math.round((event.data.pluginMessage[i].color.g*255));
+    b =  Math.round((event.data.pluginMessage[i].color.b*255));
+
+    colorArray.push('rgb(' + r +', ' + g +', ' + b + ')'); 
+    temp.style.backgroundColor = colorArray[i];   
   }
-  //console.log(colorArray)
- 
-  document.querySelector('.results')
-  var nodes = document.getElementById('all-styles').getElementsByTagName('div');
 
-  console.log(nodes);
-
-  for (let i = 0; i < 3; i++) {
-    nodes[i].style.backgroundColor = colorArray[i];
-    console.log(nodes[i]);
-    console.log(colorArray[i])
-  } 
-
-
-  
+  event.data.pluginMessage = colorArray.slice();
+  console.log("new" + event.data.pluginMessage);
 }
 
 
