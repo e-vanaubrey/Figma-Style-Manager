@@ -1,0 +1,7 @@
+{
+  "name": "Style Manager",
+  "id": "748675809755994959",
+  "api": "1.0.0",
+  "main": "code.js",
+  "ui": "ui.html"
+}
