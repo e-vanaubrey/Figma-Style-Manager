@@ -13,6 +13,7 @@
   }
   .selected {
     border: solid red 1px !important;
+    box-sizing: border-box;
     z-index: 1 !important;
   }
 </style>
@@ -29,7 +30,7 @@
         //console.log(evt.oldIndex); 
         //console.log(evt.newIndex);
 
-        parent.postMessage({ pluginMessage: colorArray }, '*')
+        parent.postMessage({ pluginMessage: 'colorArray' }, '*')
     }
   });
 
@@ -51,13 +52,14 @@ onmessage = (event) => {
     temp.className = 'results';
     temp.innerHTML = event.data.pluginMessage[i].id;
     document.getElementById('list').appendChild(temp);
-    temp.style.opacity = event.data.pluginMessage[i].opacity;
+    
     
     r =  Math.round((event.data.pluginMessage[i].color.r*255));
     g =  Math.round((event.data.pluginMessage[i].color.g*255));
     b =  Math.round((event.data.pluginMessage[i].color.b*255));
+    a = event.data.pluginMessage[i].opacity.toFixed(2);
 
-    colorArray.push('rgb(' + r +', ' + g +', ' + b + ')'); 
+    colorArray.push('rgba(' + r +', ' + g +', ' + b + ', ' + a + ')'); 
     temp.style.backgroundColor = colorArray[i];   
   }
 
